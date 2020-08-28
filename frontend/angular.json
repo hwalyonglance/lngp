@@ -1,0 +1,132 @@
+{
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"newProjectRoot": "projects",
+	"projects": {
+		"ljwt": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss"
+				}
+			},
+			"root": "projects/ljwt",
+			"sourceRoot": "projects/ljwt/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular-devkit/build-angular:browser",
+					"options": {
+						"outputPath": "dist/ljwt",
+						"index": "projects/ljwt/src/index.html",
+						"main": "projects/ljwt/src/main.ts",
+						"polyfills": "projects/ljwt/src/polyfills.ts",
+						"tsConfig": "projects/ljwt/tsconfig.app.json",
+						"aot": true,
+						"assets": [
+							"projects/ljwt/src/favicon.ico",
+							"projects/ljwt/src/assets"
+						],
+						"styles": [
+							"projects/ljwt/src/styles.scss"
+						],
+						"scripts": []
+					},
+					"configurations": {
+						"production": {
+							"fileReplacements": [
+								{
+									"replace": "projects/ljwt/src/environments/environment.ts",
+									"with": "projects/ljwt/src/environments/environment.prod.ts"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"extractCss": true,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"vendorChunk": false,
+							"buildOptimizer": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "2mb",
+									"maximumError": "5mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "6kb",
+									"maximumError": "10kb"
+								}
+							]
+						}
+					}
+				},
+				"serve": {
+					"builder": "@angular-devkit/build-angular:dev-server",
+					"options": {
+						"browserTarget": "ljwt:build"
+					},
+					"configurations": {
+						"production": {
+							"browserTarget": "ljwt:build:production"
+						}
+					}
+				},
+				"extract-i18n": {
+					"builder": "@angular-devkit/build-angular:extract-i18n",
+					"options": {
+						"browserTarget": "ljwt:build"
+					}
+				},
+				"test": {
+					"builder": "@angular-devkit/build-angular:karma",
+					"options": {
+						"main": "projects/ljwt/src/test.ts",
+						"polyfills": "projects/ljwt/src/polyfills.ts",
+						"tsConfig": "projects/ljwt/tsconfig.spec.json",
+						"karmaConfig": "projects/ljwt/karma.conf.js",
+						"assets": [
+							"projects/ljwt/src/favicon.ico",
+							"projects/ljwt/src/assets"
+						],
+						"styles": [
+							"projects/ljwt/src/styles.scss"
+						],
+						"scripts": []
+					}
+				},
+				"lint": {
+					"builder": "@angular-devkit/build-angular:tslint",
+					"options": {
+						"tsConfig": [
+							"projects/ljwt/tsconfig.app.json",
+							"projects/ljwt/tsconfig.spec.json",
+							"projects/ljwt/e2e/tsconfig.json"
+						],
+						"exclude": [
+							"**/node_modules/**"
+						]
+					}
+				},
+				"e2e": {
+					"builder": "@angular-devkit/build-angular:protractor",
+					"options": {
+						"protractorConfig": "projects/ljwt/e2e/protractor.conf.js",
+						"devServerTarget": "ljwt:serve"
+					},
+					"configurations": {
+						"production": {
+							"devServerTarget": "ljwt:serve:production"
+						}
+					}
+				}
+			}
+		}
+	},
+	"cli": {
+		"analytics": "897ae612-14a2-405e-ba5b-89b022720c0e"
+	},
+	"defaultProject": "ljwt"
+}
