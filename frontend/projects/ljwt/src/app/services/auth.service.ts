@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 @Injectable({
 	providedIn: 'root'
@@ -30,10 +30,10 @@ export class AuthService {
 			grant_type: 'password',
 			client_id: '2',
 			client_secret: '9G3M76Fne2iV0nyPmP4Yi5zdC7nqo9WfKOQxRoxM',
+			scope: '',
 			email, // |email
 			username: email, // |email
 			password,
-			scope: ''
 		}, this.options);
 	}
 	/**

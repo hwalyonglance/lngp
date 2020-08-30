@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
+use Laravel\Passport\Client;
 
 class RegisterController extends Controller
 {
@@ -89,5 +92,64 @@ class RegisterController extends Controller
 			'status' => 'success',
 			'data' => $success,
         ]);
-    }
+	}
+
+	function create2(Request $request) {
+		/**
+		 * Get a validator for an incoming registration request.
+		 *
+		 * @param  array  $request
+		 * @return \Illuminate\Contracts\Validation\Validator
+		 */
+		$valid = validator($request->only('email', 'name', 'password','passwordConfirm','client_id','client_secret'), [
+			'name' => 'required|string|max:255',
+			'email' => 'required|string|email|max:255|unique:users',
+			'password' => 'required|string|min:6',
+			'passwordConfirm' => 'required|same:password',
+			'client_id' => 'required',
+			'client_secret' => 'required',
+		]);
+
+		if ($valid->fails()) {
+			$jsonError=response()->json($valid->errors()->all(), 400);
+			$jsonError['status']=false;
+			return \Response::json($jsonError, 400);
+		}
+
+		$data = request()->only('email','name','password');
+
+		$user = User::create([
+			'name' => $data['name'],
+			'email' => $data['email'],
+			'password' => Hash::make($data['password']),
+		]);
+
+		// And created user until here.
+
+		$client = Client::
+					where('id',$request->client_id)
+					->where('secret',$request->secret)
+					->where('provider', 'users')
+					->where('password_client', 1)
+					->where('revoked', 0)
+					->firstOrFail();
+
+		// Is this $request the same request? I mean Request $request? Then wouldn't it mess the other $request stuff? Also how did you pass it on the $request in $proxy? Wouldn't Request::create() just create a new thing?
+
+		$request->request->add([
+			'grant_type'    => 'password',
+			'client_id'     => $client->id,
+			'client_secret' => $client->secret,
+			'username'      => $data['email'],
+			'password'      => $data['password'],
+			'scope'         => null,
+		]);
+
+		// Fire off the internal request.
+		$token = Request::create(
+			'oauth/token',
+			'POST'
+		);
+		return \Route::dispatch($token);
+	}
 }

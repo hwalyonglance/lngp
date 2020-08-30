@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Auth::routes();
+
 Route::middleware('auth:api')->get('/token/revoke', function (Request $request) {
     DB::table('oauth_access_tokens')
         ->where('user_id', $request->user()->id)
@@ -27,6 +29,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// bisa keduanya
-Route::middleware('guest')->post('/buat-akun', 'Auth\RegisterController@store')->name('buat-akun');
-// Route::post('/buat-akun', 'Auth\RegisterController@store')->name('buat-akun');
+Route::post('/buat-akun', 'Auth\RegisterController@store')->name('buat-akun');
+Route::post('/create2', 'Auth\RegisterController@create2');
